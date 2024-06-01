@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http'; // Import the 'HttpClient' class
+import { AccountService } from './_services/account.service';
+import { User } from './models/user';
 
 @Component({
   selector: 'app-root',
@@ -8,17 +9,19 @@ import { HttpClient } from '@angular/common/http'; // Import the 'HttpClient' cl
 })
 export class AppComponent implements OnInit{
   title: string = 'Rolo Cheats!';
-  users: any;
 
-  constructor(private http: HttpClient){}
+  constructor(private _as: AccountService){}
 
 
   ngOnInit(): void {
-    this.http.get('https://localhost:5001/api/users/').subscribe({
-      next: response => this.users = response,
-      error: () => console.log('Error occurred!'),
-      complete: () => console.log('Request completed!')
-    });
+    this.setCurrentUser();
+  }
+
+  setCurrentUser(){
+    const userString = localStorage.getItem('user');
+    if(!userString) return;
+    const user: User = JSON.parse(userString);
+    this._as.setCurrentUser(user);
   }
 }
   
